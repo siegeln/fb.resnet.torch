@@ -80,7 +80,10 @@ local pca = {
 function ImagenetDataset:preprocess()
    if self.split == 'train' then
       return t.Compose{
-         t.RandomSizedCrop(224),
+         t.Scale(224),
+         t.ColorNormalize(meanstd),
+         t.CenterCrop(224),
+         --[[t.RandomSizedCrop(224),
          t.ColorJitter({
             brightness = 0.4,
             contrast = 0.4,
@@ -88,14 +91,17 @@ function ImagenetDataset:preprocess()
          }),
          t.Lighting(0.1, pca.eigval, pca.eigvec),
          t.ColorNormalize(meanstd),
-         t.HorizontalFlip(0.5),
+         t.HorizontalFlip(0.5),]]
       }
    elseif self.split == 'val' then
       local Crop = self.opt.tenCrop and t.TenCrop or t.CenterCrop
       return t.Compose{
-         t.Scale(256),
+         t.Scale(224),
          t.ColorNormalize(meanstd),
-         Crop(224),
+         t.CenterCrop(224),
+         --t.Scale(256),
+         --t.ColorNormalize(meanstd),
+         --Crop(224),
       }
    else
       error('invalid split: ' .. self.split)
