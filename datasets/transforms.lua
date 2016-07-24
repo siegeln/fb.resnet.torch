@@ -33,6 +33,14 @@ function M.ColorNormalize(meanstd)
    end
 end
 
+-- Stretches image to a square with size
+function M.MakeSquare(size, interpolation)
+   interpolation = interpolation or 'bicubic'
+   return function(input)
+      return image.scale(input, size, size, interpolation)
+   end
+end
+
 -- Scales the smaller edge to size
 function M.Scale(size, interpolation)
    interpolation = interpolation or 'bicubic'
