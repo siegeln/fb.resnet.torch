@@ -20,5 +20,5 @@ echo "PID: $$" >> $OUTPUTNAME
 echo "Batch size: $BATCHSIZE" >> $OUTPUTNAME
 echo "LR: $LR" >> $OUTPUTNAME
 date >> $OUTPUTNAME
-CUDA_VISIBLE_DEVICES=$GPUID th main.lua -resume $CHECKPOINTDIR -nGPU $NGPU -retrain weights/resnet-${DEPTH}.t7 -data ~/data/cleanedZachClassData/63KTRAINVAL/ -resetClassifier true -nClasses 7 -nThreads 16 -save $CHECKPOINTDIR -batchSize $BATCHSIZE -nEpochs 100 -LR $LR >> $OUTPUTNAME
+CUDA_VISIBLE_DEVICES=$GPUID th main.lua -tenCrop true -resume $CHECKPOINTDIR -nGPU $NGPU -retrain weights/resnet-${DEPTH}.t7 -data ~/data/cleanedZachClassData/63KTRAINVAL/ -resetClassifier true -nClasses 7 -nThreads 16 -save $CHECKPOINTDIR -batchSize $BATCHSIZE -nEpochs 100 -LR $LR >> $OUTPUTNAME
 date >> $OUTPUTNAME
