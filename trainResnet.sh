@@ -4,7 +4,9 @@ DEPTH=$1
 GPUID=$2
 EXPERIMENT_NAME=$3
 NGPU=$(((${#GPUID}+1)/2))
-OUTPUTDIR=output/$EXPERIMENT_NAME
+RESNETDIR=$HOME/data/fb_resnet
+OUTPUTDIR=$RESNETDIR/output/$EXPERIMENT_NAME
+CHECKPOINTDIR=$RESNETDIR/checkpoints/$EXPERIMENT_NAME/$DEPTH
 mkdir -p $OUTPUTDIR
 OUTPUTNAME=$OUTPUTDIR/${DEPTH}.out
 BATCHSIZE=$((32*NGPU))
@@ -13,10 +15,10 @@ LR=0.1
 #then
   LR=0.01 #Default LR was causing divergence for resnet-18 and resnet-34
 #fi
-echo "Running on GPU $GPUID" > $OUTPUTNAME 
+echo "Running on GPU $GPUID" >> $OUTPUTNAME 
 echo "PID: $$" >> $OUTPUTNAME
 echo "Batch size: $BATCHSIZE" >> $OUTPUTNAME
 echo "LR: $LR" >> $OUTPUTNAME
 date >> $OUTPUTNAME
-CUDA_VISIBLE_DEVICES=$GPUID th main.lua -nGPU $NGPU -retrain weights/resnet-${DEPTH}.t7 -data ~/data/cleanedZachClassData/63KTRAINVAL/ -resetClassifier true -nClasses 7 -nThreads 16 -save checkpoints/$EXPERIMENT_NAME/$DEPTH -batchSize $BATCHSIZE -nEpochs 100 -LR $LR >> $OUTPUTNAME
+CUDA_VISIBLE_DEVICES=$GPUID th main.lua -resume $CHECKPOINTDIR -nGPU $NGPU -retrain weights/resnet-${DEPTH}.t7 -data ~/data/cleanedZachClassData/63KTRAINVAL/ -resetClassifier true -nClasses 7 -nThreads 16 -save $CHECKPOINTDIR -batchSize $BATCHSIZE -nEpochs 100 -LR $LR >> $OUTPUTNAME
 date >> $OUTPUTNAME
